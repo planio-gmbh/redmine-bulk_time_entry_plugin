@@ -12,6 +12,7 @@ class BulkTimeEntriesController < ApplicationController
 
   def index
     @time_entries = [TimeEntry.new(:spent_on => today_with_time_zone.to_s)]
+    @bulk_time_entry = BulkTimeEntry.new
   end
 
   def load_assigned_issues
@@ -61,8 +62,7 @@ class BulkTimeEntriesController < ApplicationController
   end
 
   def load_allowed_projects
-    @projects = User.current.projects.find(:all,
-      Project.allowed_to_condition(User.current, :log_time))
+    @projects = User.current.projects.where(Project.allowed_to_condition(User.current, :log_time))
   end
 
   def load_first_project
@@ -86,6 +86,6 @@ class BulkTimeEntriesController < ApplicationController
   end
 
   def self.allowed_project?(project_id)
-    return User.current.projects.find_by_id(project_id, :conditions => Project.allowed_to_condition(User.current, :log_time))
+    return User.current.projects.where(Project.allowed_to_condition(User.current, :log_time)).where(id: project_id).first
   end
 end

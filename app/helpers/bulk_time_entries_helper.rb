@@ -34,7 +34,7 @@ module BulkTimeEntriesHelper
   def get_issues(project_id)
     project = BulkTimeEntriesController.allowed_project?(project_id)
     if project
-      project.issues.all(:order => 'id ASC')
+      project.issues.order(:id).all
     else
       []
     end
